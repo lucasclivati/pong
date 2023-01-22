@@ -24,6 +24,15 @@ velocidadeYOponente = 5;
 //variáveis da colisão
 let colidiu = false;
 
+//sons do jogo
+let raquetada, somponto, trilha;
+
+function preload(){
+  trilha = loadSound("trilha.mp3");
+  ponto = loadSound("ponto.mp3");
+  raquetada = loadSound("raquetada.mp3");
+}
+
 //placar do jogo
 let pontos1, pontos2
 pontos1 = 0;
@@ -31,6 +40,7 @@ pontos2 = 0;
     
 function setup() {
   createCanvas(600, 400);
+  trilha.loop();
 }
 
 function draw() {
@@ -39,6 +49,7 @@ function draw() {
   mostraRaquete(xRaquete,yRaquete);
   movimentarBolinha();
   verificaColisaoBorda();
+  bolinhaMeioTela();
   movimentaRaquete();
   //verificaColisaoRaquete();
   colisaoRaqueteBiblioteca(xRaquete,yRaquete); // colisao com minha raquete
@@ -76,6 +87,7 @@ function colisaoRaqueteBiblioteca(x,y){
 colidiu = collideRectCircle(x,y,RaqueteComprimento,RaqueteAltura,xBolinha,yBolinha,raioBolinha);
   if(colidiu){
     velocidadeXBolinha *= -1;
+    raquetada.play();
   }
 }
 
@@ -85,6 +97,12 @@ function verificaColisaoRaquete(){
      yBolinha + raioBolinha > yRaquete){
     velocidadeXBolinha *= -1;
   }
+}
+
+function bolinhaMeioTela(){
+    if (xBolinha + raioBolinha < 0){
+    xBolinha = 300;
+    }
 }
 
 function verificaColisaoBorda(){
@@ -98,21 +116,36 @@ function verificaColisaoBorda(){
   }
 }
 function movimentaRaqueteOponente(){
-  velocidadeYOponente = yBolinha - yRaqueteOponente - RaqueteComprimento /2 -30;
-  yRaqueteOponente += velocidadeYOponente;
+  //w para subir
+  if (keyIsDown(87)){
+    yRaqueteOponente -= 10;
+  }
+    //s para subir
+    if (keyIsDown(83)){
+    yRaqueteOponente += 10;
+  }
 }
 
 function incluirPlacar(){
-  textSize(16);
+  stroke(255);
+  textAlign(CENTER);
+  textSize(20);
+  fill(color(255,140,0));
+  rect(210,10,40,20);
   fill(255);
-  text(pontos1, 278,26);
-  text(pontos2, 321,26);
+  text(pontos1, 230,26);
+  fill(color(255,140,0));
+  rect(350,10,40,20);
+  fill(255);
+  text(pontos2, 370,26);
 }
 function marcaPonto(){
   if (xBolinha > 590){
     pontos1 += 1;
+    ponto.play();
   }
     if (xBolinha < 10){
     pontos2 += 1;
+    ponto.play();
   }
 }
